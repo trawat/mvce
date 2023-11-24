@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsf/core"
+      xmlns:f="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      lang="en">
+
+    <h:head>
+        
+    </h:head>
+
+    <h:body>
+    	<p:confirmDialog global="true">
+		    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+		    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+		</p:confirmDialog>
+		<h:form id="main">
+			<p:toolbar id="tb" styleClass="p-mb-1">
+				<p:toolbarGroup align="left">
+					<f:include src="include_status_split_button.xhtml" >
+						<f:param name="ctlr" value="#{mvceCtlr}" />
+					</f:include>
+	            </p:toolbarGroup>
+	            <p:toolbarGroup align="right">
+	            	
+	            </p:toolbarGroup>
+	        </p:toolbar>
+	        <p:dataTable id="datatable" var="detail" widgetVar="wvar" multiViewState="true"
+				value="#{mvceCtlr.models}" rowIndexVar="index" rowKey="#{detail.hashCode()}" 
+				paginator="true" rows="10" 
+				selection="#{mvceCtlr.selections}" selectionPageOnly="false">
+				
+				<p:ajax event="rowUnselect" update="main:tb"/>
+				<p:ajax event="rowSelect" update="main:tb"/>
+				<p:ajax event="rowUnselectCheckbox" update="main:tb"/>
+				<p:ajax event="rowSelectCheckbox" update="main:tb"/>
+				<p:ajax event="toggleSelect" process="datatable" update="main:tb" />
+				
+				<p:column selectionMode="multiple" 
+					style="width:37px;text-align:center" 
+					toggleable="false"/>
+				
+				<p:column headerText="Id#">
+					#{detail.id}
+				</p:column>
+				<p:column headerText="Status" 
+					width="5%">
+					#{detail.status}
+				</p:column>
+				<p:column headerText="Type"
+					filterBy="#{detail.type}">
+					#{detail.type}
+					<c:facet name="filter">
+						<p:selectOneMenu value="#{mvceCtlr.text}">
+							<c:selectItem itemLabel="" itemValue="#{null}"/>
+							<c:selectItem itemLabel="All" itemValue="#{'All'}"/>
+							<c:selectItem itemLabel="Car" itemValue="#{'Car'}"/>
+							<c:selectItem itemLabel="Truck" itemValue="#{'Truck'}"/>
+							<c:selectItem itemLabel="Trolley" itemValue="#{'Trolley'}"/>
+							<c:selectItem itemLabel="Bike" itemValue="#{'Bike'}"/>
+							<c:selectItem itemLabel="Train" itemValue="#{'Train'}"/>
+							<p:ajax event="change" 
+								listener="#{mvceCtlr.filter}"
+								update="@form"/>
+						</p:selectOneMenu>
+					</c:facet>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+    </h:body>
+</html>
